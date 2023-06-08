@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      * {
+        font-family: 'Microsoft YaHei', '微软雅黑', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      }
+    .header {
+        width: 100%;
+        height: 70px;
+        position: relative;
+      }
+     .header img {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        width: 200px;
+      }
+      .img {
+        width: 100%;
+      }
+      #footer {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        height: 50px;
+      }
+      #content {
+        margin: 30px 0px;
+      }
+      table,
+      th,
+      td {
+        border: 1px solid rgb(224, 224, 224);
+        border-collapse: collapse;
+        padding: 16px 13px;
+        font-size: 12px;
+        text-align: center;
+      }
+      table th {
+        font-weight: 600;
+        font-size: 13px;
+      }
+      
+      tr td {
+        color: #4b4b4b;
+        font-size: 11px;
+      }
+
+      .title-info h2 {
+        font-size: 27pt;
+        font-weight: 600;
+        text-align: center;
+        margin-bottom: 5px;
+      }
+
+      .sub-title {
+        text-align: center;
+        display: block;
+        font-size: 14px;
+      }
+      .sign-info {
+        text-align: center;
+        margin: 25px 0;
+        color: #454545;
+      }
+      .sign-info .underline {
+        display: inline-block;
+        width: 200px;
+        height: 2px;
+        border-bottom: 1px solid black;
+        margin-top: 10px;
+      }
+
+      .info ul {
+        column-gap: 20px;
+        padding-left: 0px;
+      }
+      .info ul li {
+        position: relative;
+        width: 50%;
+        float: left;
+        margin-bottom: 5px;
+        list-style-type: none;
+         /* 添加的代码：设置列表项字体大小 */
+      }
+
+      .info li:before {
+        content: '';
+        position: absolute;
+        left: -5px;
+        top: 8px;
+        width: 2px;
+        height: 2px;
+        border-radius: 50%;
+        background-color: black;
+      }
+      .clear {
+        clear: both;
+      }
+
+      .header-margin {
+        margin: 5.5em 0 1em -1em;
+      }
+
+      .table-width {
+        width: 100%;
+        margin-bottom: 3em;
+      }
+
+      .footer-height {
+        height: 100px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <img src="./images/logo.jpg" alt="logo" />
+    </div>
+    <img class="img" src="./images/banner.jpg" alt="" srcset="" />
+    <img class="img" src="./images/split.jpg" alt="" srcset="" />
+
+    <div class="title-info">
+      <h2>滴滴出行-行程单</h2>
+      <span class="sub-title">DIDI TRAVEL - TRIP TABLE</span>
+      <div class="sign-info">
+        姓名：<span class="underline"></span> 工号：<span class="underline"></span> 部门：<span
+          class="underline"
+        ></span>
+      </div>
+
+      <div class="info">
+        <ul>
+            <li>申请日期:{{ apply_date }}</li>
+            <li>行程起止日期:{{ trip_start_date }} 至 {{ trip_end_date }}</li>
+            <li>行程人手机号:{{ phone_number }}</li>
+            <li>共{{ trip_count }}笔行程， 合计{{ total_amount }}元</li>
+        </ul>
+      </div>
+    </div>
+    <div class="clear"></div>
+
+      {% for orders_group in orders %} 
+    <div id="content">
+      
+        {% if loop.index != 1 %}
+        <div class="header header-margin">
+          <img src="./images/logo.jpg" alt="logo" />
+        </div>
+        {% endif %}
+        <table class="table-width">
+          <tr>
+            <th style="padding-left: 2px; padding-right: 2px;" width="30">序号</th>
+            <th>车型</th>
+            <th>上车时间</th>
+            <th>城市</th>
+            <th>起点</th>
+            <th>终点</th>
+            <th>里程[公里]</th>
+            <th>金额[元]</th>
+            <th>备注</th>
+          </tr>
+          {% for order in orders_group %}
+          <tr>
+            <td style="padding-left: 2px; padding-right: 2px;">{{ order.number }}</td>
+            <td>{{ order.model }}</td>
+            <td>{{ order.start_time }}</td>
+            <td>{{ order.city }}</td>
+            <td>{{ order.start_point }}</td>
+            <td>{{ order.end_point }}</td>
+            <td>{{ order.distance_km }}</td>
+            <td>{{ order.amount_yuan }}</td>
+            <td>{{ order.note }}</td>
+          </tr>
+          {% endfor %}
+        </table> 
+
+
+        {% if loop.index != 1 %}
+        <div class="footer-height"></div>
+        {% endif %}
+    </div>
+      {% endfor %}
+
+    <div id="footer">
+      <!-- 使用pdf生成工具在页脚添加页码 -->
+    </div>
+  </body>
+</html>
