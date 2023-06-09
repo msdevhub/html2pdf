@@ -10,6 +10,8 @@ COPY . .
 
 # RUN strip --remove-section=.note.ABI-tag /usr/lib/x86_64-linux-gnu/libQt5Core.so.5
 RUN pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+COPY ./fonts/** /usr/share/fonts
+RUN fc-cache -f -v
 
 EXPOSE 8501
 
