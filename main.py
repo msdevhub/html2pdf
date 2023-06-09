@@ -123,6 +123,8 @@ def main():
                 orders=splitted_orders, **generate_vars
             )
 
+            print(html_content)
+
             # Generate PDF and log to database
             pdf_data = generate_pdf(html_content)
 
