@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY . .
 RUN apt-get update && apt-get install -y \
-    wkhtmltopdf gcc\
+    wkhtmltopdf libcairo2-dev gcc\
     xvfb \
     && rm -rf /var/lib/apt/lists/*
 
