@@ -1,16 +1,21 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
     <style>
+      @font-face {
+        font-family: '微软雅黑';
+        src: url('./fonts/微软雅黑.ttf') format('ttf');
+      }
       * {
         font-family: 'Microsoft YaHei', '微软雅黑', 'Helvetica Neue', Helvetica, Arial, sans-serif;
       }
-    .header {
+      .header {
         width: 100%;
         height: 70px;
         position: relative;
       }
-     .header img {
+      .header img {
         position: absolute;
         top: 10px;
         left: 10px;
@@ -41,7 +46,7 @@
         font-weight: 600;
         font-size: 13px;
       }
-      
+
       tr td {
         color: #4b4b4b;
         font-size: 11px;
@@ -82,7 +87,7 @@
         float: left;
         margin-bottom: 5px;
         list-style-type: none;
-         /* 添加的代码：设置列表项字体大小 */
+        /* 添加的代码：设置列表项字体大小 */
       }
 
       .info li:before {
@@ -131,56 +136,54 @@
 
       <div class="info">
         <ul>
-            <li>申请日期:{{ apply_date }}</li>
-            <li>行程起止日期:{{ trip_start_date }} 至 {{ trip_end_date }}</li>
-            <li>行程人手机号:{{ phone_number }}</li>
-            <li>共{{ trip_count }}笔行程， 合计{{ total_amount }}元</li>
+          <li>申请日期:{{ apply_date }}</li>
+          <li>行程起止日期:{{ trip_start_date }} 至 {{ trip_end_date }}</li>
+          <li>行程人手机号:{{ phone_number }}</li>
+          <li>共{{ trip_count }}笔行程， 合计{{ total_amount }}元</li>
         </ul>
       </div>
     </div>
     <div class="clear"></div>
 
-      {% for orders_group in orders %} 
+    {% for orders_group in orders %}
     <div id="content">
-      
-        {% if loop.index != 1 %}
-        <div class="header header-margin">
-          <img src="./images/logo.jpg" alt="logo" />
-        </div>
-        {% endif %}
-        <table class="table-width">
-          <tr>
-            <th style="padding-left: 2px; padding-right: 2px;" width="30">序号</th>
-            <th>车型</th>
-            <th>上车时间</th>
-            <th>城市</th>
-            <th>起点</th>
-            <th>终点</th>
-            <th>里程[公里]</th>
-            <th>金额[元]</th>
-            <th>备注</th>
-          </tr>
-          {% for order in orders_group %}
-          <tr>
-            <td style="padding-left: 2px; padding-right: 2px;">{{ order.number }}</td>
-            <td>{{ order.model }}</td>
-            <td>{{ order.start_time }}</td>
-            <td>{{ order.city }}</td>
-            <td>{{ order.start_point }}</td>
-            <td>{{ order.end_point }}</td>
-            <td>{{ order.distance_km }}</td>
-            <td>{{ order.amount_yuan }}</td>
-            <td>{{ order.note }}</td>
-          </tr>
-          {% endfor %}
-        </table> 
+      {% if loop.index != 1 %}
+      <div class="header header-margin">
+        <img src="./images/logo.jpg" alt="logo" />
+      </div>
+      {% endif %}
+      <table class="table-width">
+        <tr>
+          <th style="padding-left: 2px; padding-right: 2px" width="30">序号</th>
+          <th>车型</th>
+          <th>上车时间</th>
+          <th>城市</th>
+          <th>起点</th>
+          <th>终点</th>
+          <th>里程[公里]</th>
+          <th>金额[元]</th>
+          <th>备注</th>
+        </tr>
+        {% for order in orders_group %}
+        <tr>
+          <td style="padding-left: 2px; padding-right: 2px">{{ order.number }}</td>
+          <td>{{ order.model }}</td>
+          <td>{{ order.start_time }}</td>
+          <td>{{ order.city }}</td>
+          <td>{{ order.start_point }}</td>
+          <td>{{ order.end_point }}</td>
+          <td>{{ order.distance_km }}</td>
+          <td>{{ order.amount_yuan }}</td>
+          <td>{{ order.note }}</td>
+        </tr>
+        {% endfor %}
+      </table>
 
-
-        {% if loop.index != 1 %}
-        <div class="footer-height"></div>
-        {% endif %}
+      {% if loop.index != 1 %}
+      <div class="footer-height"></div>
+      {% endif %}
     </div>
-      {% endfor %}
+    {% endfor %}
 
     <div id="footer">
       <!-- 使用pdf生成工具在页脚添加页码 -->
