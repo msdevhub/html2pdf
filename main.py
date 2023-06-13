@@ -39,7 +39,7 @@ def main():
         value=(datetime.today(), datetime.today() + timedelta(days=30)),
     )
 
-    total_amount = sidebar.number_input("总金额", value=1889, min_value=0, step=100)
+    total_amount = sidebar.number_input("总金额", value=2889.34, min_value=0.00, step=0.01)
 
     start_address = sidebar.text_input("起点地址", value="北京", key="start_address")
 
@@ -123,7 +123,7 @@ def main():
                 orders=splitted_orders, **generate_vars
             )
 
-            print(html_content)
+            # print(html_content)
 
             # Generate PDF and log to database
             pdf_data = generate_pdf(html_content)

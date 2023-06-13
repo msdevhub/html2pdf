@@ -21,7 +21,8 @@ def generate_order_item(number, model, start_time, city, start_point, end_point,
     生成订单项
     """
     mileage = round(random.uniform(mileage_range[0], mileage_range[1]), 1)
-    amount = daily_amount * mileage / sum(mileage_range) * 2
+    peak_charge = calculate_peak_charge(start_time.split(' ')[1])  # calculate peak charge based on start time
+    amount = daily_amount * mileage / sum(mileage_range) * 2 * peak_charge  # apply peak charge to amount
     order = {
         "number": number,
         "model": model,
@@ -34,6 +35,14 @@ def generate_order_item(number, model, start_time, city, start_point, end_point,
         "note": "",
     }
     return order
+
+
+def calculate_peak_charge(start_time):
+    hour = int(start_time.split(':')[0])
+    if (hour >= 7 and hour <= 9) or (hour >= 17 and hour <= 19):
+        return 1.2
+    else:
+        return 1.0
 
 
 def generate_daily_orders(start_date, address_info, city, model, daily_amount):
@@ -77,7 +86,18 @@ def calculate_adjusted_amounts(total_amount, amounts):
     """
     total_amount_generated = sum(amounts)
     adjustment_ratio = total_amount / total_amount_generated
-    return [Decimal(amount * adjustment_ratio).quantize(Decimal("0.00")) for amount in amounts]
+    adjusted_amounts = [Decimal(amount * adjustment_ratio).quantize(Decimal("0.00")) for amount in amounts]
+    current_total_amount = round(sum(adjusted_amounts), 2)
+
+    # Check if the sum of adjusted amounts equals to total_amount (round to 2 decimal places)
+    if current_total_amount != round(total_amount, 2):
+        # Find the difference
+        diff = round(Decimal(total_amount), 2) - current_total_amount
+        # Randomly select a record to adjust
+        adjusted_amounts[random.randint(0, len(adjusted_amounts) - 1)] += diff
+
+    return adjusted_amounts
+
 
 def generate_orders(holidays, start_date, end_date, total_amount, address_info, city, model):
     """
