@@ -1,5 +1,6 @@
 import calendar
 from datetime import datetime, timedelta
+from decimal import Decimal
 import os
 import jinja2
 import streamlit as st
@@ -33,6 +34,7 @@ def main():
     sidebar = st.sidebar
     sidebar.title("参数配置")
 
+    sidebar.subheader("行程单参数")
     start_date, end_date = sidebar.date_input(
         "日期范围",
         help="选择开始和结束日期",
@@ -80,7 +82,7 @@ def main():
             }
 
             holidays = [holiday["key"] for holiday in get_holidays(start_date)]
-
+            holidays.append('2023.06.21')
             orders, pre_total_amount, post_total_amount = generate_orders(
                 holidays,
                 start_date.strftime("%Y-%m-%d"),
@@ -116,7 +118,7 @@ def main():
                 "trip_end_date": end_date.strftime("%Y-%m-%d"),
                 "phone_number": phone_number,
                 "trip_count": trip_count,
-                "total_amount": total_amount,
+                "total_amount": round(Decimal(total_amount), 2),
             }
 
             html_content = jinja2.Template(html).render(

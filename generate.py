@@ -22,7 +22,7 @@ def generate_order_item(number, model, start_time, city, start_point, end_point,
     """
     mileage = round(random.uniform(mileage_range[0], mileage_range[1]), 1)
     peak_charge = calculate_peak_charge(start_time.split(' ')[1])  # calculate peak charge based on start time
-    amount = daily_amount * mileage / sum(mileage_range) * 2 * peak_charge  # apply peak charge to amount
+    amount = daily_amount * mileage / (sum(mileage_range) / 2) * peak_charge  # apply peak charge to amount
     order = {
         "number": number,
         "model": model,
@@ -34,12 +34,14 @@ def generate_order_item(number, model, start_time, city, start_point, end_point,
         "amount_yuan": amount,
         "note": "",
     }
+    print(order)
     return order
 
 
 def calculate_peak_charge(start_time):
     hour = int(start_time.split(':')[0])
     if (hour >= 7 and hour <= 9) or (hour >= 17 and hour <= 19):
+        print("Peak charge applied ", start_time)
         return 1.2
     else:
         return 1.0
@@ -52,7 +54,7 @@ def generate_daily_orders(start_date, address_info, city, model, daily_amount):
     orders = []
     weekday = WEEKDAY_MAP[start_date.weekday()]
 
-    morning_start_time = create_start_time(start_date, "08:30", random.randint(0, 60))
+    morning_start_time = create_start_time(start_date, "06:40", random.randint(0, 60))
     morning_order = generate_order_item(
         len(orders) + 1,
         model,
@@ -107,7 +109,7 @@ def generate_orders(holidays, start_date, end_date, total_amount, address_info, 
     start_date = datetime.strptime(start_date, "%Y-%m-%d")
     end_date = datetime.strptime(end_date, "%Y-%m-%d")
 
-    daily_amount = total_amount / ((end_date - start_date).days + 1) * 2
+    daily_amount = total_amount / ((end_date - start_date).days + 1) 
 
     while start_date <= end_date:
         if start_date.weekday() < 5 and start_date.strftime("%Y.%m.%d") not in holidays:
@@ -116,11 +118,14 @@ def generate_orders(holidays, start_date, end_date, total_amount, address_info, 
 
         start_date += timedelta(days=1)
 
+    # Adjust the amount to match the total amount
     amounts = [order['amount_yuan'] for order in orders]
     adjusted_amounts = calculate_adjusted_amounts(total_amount, amounts)
 
-    for order, amount in zip(orders, adjusted_amounts):
+    for index, (order, amount) in enumerate(zip(orders, adjusted_amounts)):
         order['amount_yuan'] = amount
+        # update number
+        order['number'] = index+1
 
     current_total_amount = sum(order['amount_yuan'] for order in orders)
 
