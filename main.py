@@ -26,7 +26,7 @@ def main():
     with open(html_file_name, "r") as f:
         html = f.read()
 
-    # 将 HTML 中的相对路径更改为绝对路径
+    # 将 HTML 中的相对路径更改为绝对路径 2023.07.17,2023.07.18,2023.07.19,2023.07.20,2023.07.21
     html = html.replace("./images/", "file://" + html_dir + "/images/")
 
     # 添加用户界面元素到左侧侧边栏
@@ -35,17 +35,20 @@ def main():
     sidebar.title("参数配置")
 
     sidebar.subheader("行程单参数")
-    start_date, end_date = sidebar.date_input(
+    datetimes = sidebar.date_input(
         "日期范围",
         help="选择开始和结束日期",
         value=(datetime.today(), datetime.today() + timedelta(days=30)),
     )
 
+    if len(datetimes) == 2:
+        start_date, end_date = datetimes
+
     total_amount = sidebar.number_input("总金额", value=2889.34, min_value=0.00, step=0.01)
 
-    start_address = sidebar.text_input("起点地址", value="北京", key="start_address")
+    start_address = sidebar.text_input("起点地址", value="永定|石门营新区六区-东北2门", key="start_address")
 
-    end_address = sidebar.text_input("终点地址", value="上海", key="end_address")
+    end_address = sidebar.text_input("终点地址", value="科技园区|中行海鹰大厦", key="end_address")
 
     mileage_range = sidebar.text_input(
         "里程范围（例如：23-25）",
@@ -61,11 +64,23 @@ def main():
 
     city = sidebar.text_input("城市", value="北京市", key="city")
 
-    model = sidebar.text_input("车型", value="车", key="model")
+    model = sidebar.text_input("车型", value="滴滴快车", key="model")
 
-    phone_number = sidebar.text_input("电话号码", value="18088889999", key="phone_number")
+    phone_number = sidebar.text_input("电话号码", value="18010486313", key="phone_number")
 
     pdf_file_name = sidebar.text_input("文件名", value="行程单", key="pdf_file_name")
+
+    skip_days = sidebar.text_area(
+        "跳过的日期",
+        value="2021.10.01,2021.10.02",
+        help="跳过的日期，用逗号分隔",
+    )
+
+    include_holidays = sidebar.text_area(
+        "包含的节假日",
+        value="",
+        help="包含的节假日，用逗号分隔",
+    )
 
     if "instructions_hidden" not in st.session_state:
         st.info("请先在左侧侧边栏设置参数，然后点击“生成订单”按钮。")
@@ -82,7 +97,16 @@ def main():
             }
 
             holidays = [holiday["key"] for holiday in get_holidays(start_date)]
-            holidays.append('2023.06.21')
+            # holidays.append('2023.06.21')
+
+            if skip_days != '':
+                for day in skip_days.split(","):
+                    holidays.append(day.strip())
+            
+            if include_holidays != '':
+                for day in include_holidays.split(","):
+                    holidays.remove(day.strip()) if holidays.count(day.strip()) > 0 else None
+            
             orders, pre_total_amount, post_total_amount = generate_orders(
                 holidays,
                 start_date.strftime("%Y-%m-%d"),
