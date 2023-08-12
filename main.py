@@ -109,6 +109,7 @@ def main():
             
             orders, pre_total_amount, post_total_amount = generate_orders(
                 holidays,
+                include_holidays,
                 start_date.strftime("%Y-%m-%d"),
                 end_date.strftime("%Y-%m-%d"),
                 total_amount,

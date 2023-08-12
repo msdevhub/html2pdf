@@ -101,7 +101,7 @@ def calculate_adjusted_amounts(total_amount, amounts):
     return adjusted_amounts
 
 
-def generate_orders(holidays, start_date, end_date, total_amount, address_info, city, model):
+def generate_orders(holidays, include_holidays, start_date, end_date, total_amount, address_info, city, model):
     """
     生成订单
     """
@@ -112,7 +112,7 @@ def generate_orders(holidays, start_date, end_date, total_amount, address_info, 
     daily_amount = total_amount / ((end_date - start_date).days + 1) 
 
     while start_date <= end_date:
-        if start_date.weekday() < 5 and start_date.strftime("%Y.%m.%d") not in holidays:
+        if (start_date.strftime("%Y.%m.%d") in include_holidays) or (start_date.weekday() < 5 and start_date.strftime("%Y.%m.%d") not in holidays):
             daily_orders = generate_daily_orders(start_date, address_info, city, model, daily_amount)
             orders.extend(daily_orders)
 
