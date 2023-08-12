@@ -2,6 +2,8 @@ from datetime import datetime, timedelta
 from decimal import Decimal
 import random
 
+import pandas as pd
+
 WEEKDAY_MAP = {
     0: "一",
     1: "二",
@@ -100,23 +102,18 @@ def calculate_adjusted_amounts(total_amount, amounts):
 
     return adjusted_amounts
 
-
 def generate_orders(holidays, include_holidays, start_date, end_date, total_amount, address_info, city, model):
     """
     生成订单
     """
-    orders = []
     start_date = datetime.strptime(start_date, "%Y-%m-%d")
     end_date = datetime.strptime(end_date, "%Y-%m-%d")
 
     daily_amount = total_amount / ((end_date - start_date).days + 1) 
 
-    while start_date <= end_date:
-        if (start_date.strftime("%Y.%m.%d") in include_holidays) or (start_date.weekday() < 5 and start_date.strftime("%Y.%m.%d") not in holidays):
-            daily_orders = generate_daily_orders(start_date, address_info, city, model, daily_amount)
-            orders.extend(daily_orders)
-
-        start_date += timedelta(days=1)
+    orders = [order for date in pd.date_range(start_date, end_date) 
+              if (date.strftime("%Y.%m.%d") in include_holidays) or (date.weekday() < 5 and date.strftime("%Y.%m.%d") not in holidays)
+              for order in generate_daily_orders(date, address_info, city, model, daily_amount)]
 
     # Adjust the amount to match the total amount
     amounts = [order['amount_yuan'] for order in orders]

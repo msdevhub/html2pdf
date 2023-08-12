@@ -10,7 +10,25 @@ from holiday import get_holidays
 from utils import generate_pdf, split_orders
 from logger import log_to_database
 
+import yaml
+from yaml.loader import SafeLoader
+import streamlit as st
+import streamlit_authenticator as stauth
 
+# 添加用户界面元素到左侧侧边栏
+st.set_page_config(layout="wide")
+
+with open('./config.yaml') as file:
+    config = yaml.load(file, Loader=SafeLoader)
+
+authenticator = stauth.Authenticate(
+    config['credentials'],
+    config['cookie']['name'],
+    config['cookie']['key'],
+    config['cookie']['expiry_days'],
+    config['preauthorized']
+)
+name, authentication_status, username = authenticator.login('Login', 'main')
 
 def main():
     # 假设你的 HTML 文件的名字是 'template.html'
@@ -29,8 +47,6 @@ def main():
     # 将 HTML 中的相对路径更改为绝对路径 2023.07.17,2023.07.18,2023.07.19,2023.07.20,2023.07.21
     html = html.replace("./images/", "file://" + html_dir + "/images/")
 
-    # 添加用户界面元素到左侧侧边栏
-    st.set_page_config(layout="wide")
     sidebar = st.sidebar
     sidebar.title("参数配置")
 
@@ -203,6 +219,14 @@ def main():
                     )
                 st.table(order_table)
 
-
 if __name__ == "__main__":
-    main()
+    if authentication_status:
+
+        authenticator.logout('Logout', 'main', key='unique_key')
+        st.write(f'Welcome *{name}*')
+        
+        main()
+    elif authentication_status is False:
+        st.error('Username/password is incorrect')
+    elif authentication_status is None:
+        st.warning('Please enter your username and password')

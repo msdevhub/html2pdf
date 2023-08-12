@@ -4,3 +4,4 @@ streamlit
 jinja2
 pymysql
 load_dotenv
+streamlit-authenticator
