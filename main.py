@@ -120,8 +120,7 @@ def main():
                     holidays.append(day.strip())
             
             if include_holidays != '':
-                for day in include_holidays.split(","):
-                    holidays.remove(day.strip()) if holidays.count(day.strip()) > 0 else None
+                include_holidays = include_holidays.split(",")
             
             orders, pre_total_amount, post_total_amount = generate_orders(
                 holidays,

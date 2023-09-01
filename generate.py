@@ -9,7 +9,9 @@ WEEKDAY_MAP = {
     1: "二",
     2: "三",
     3: "四",
-    4: "五"
+    4: "五",
+    5: "六",
+    6: "日"
 }
 
 def create_start_time(start_date, start, random_minutes):
